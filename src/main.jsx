@@ -28,8 +28,8 @@ class ErrorBoundary extends React.Component {
           padding: "30px",
           fontFamily: "Arial"
         }}>
-          <h2 style={{color:"#ff7777"}}>VoxLime Error</h2>
-          <pre style={{whiteSpace:"pre-wrap",color:"#a3e635"}}>
+          <h2 style={{ color: "#ff7777" }}>VoxLime Error</h2>
+          <pre style={{ whiteSpace: "pre-wrap", color: "#a3e635" }}>
             {this.state.error.toString()}
           </pre>
           <p>এই Error Message আমাকে পাঠাও।</p>
