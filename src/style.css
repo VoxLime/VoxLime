@@ -27,3 +27,309 @@
 .anime-card:hover .poster-hover {
   opacity: 1;
 }
+
+/* =================================
+   VOXLIME WATCH PAGE
+================================= */
+
+.watch-page {
+  padding: 28px 5.5% 110px;
+  min-height: 75vh;
+}
+
+.watch-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #c6f58a;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.watch-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 22px;
+  margin-top: 15px;
+}
+
+.watch-main {
+  min-width: 0;
+}
+
+.watch-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid #ffffff18;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.watch-player video,
+.watch-player iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  background: #000;
+}
+
+.watch-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 20px;
+  background: radial-gradient(circle, #27203c, #080711 75%);
+}
+
+.watch-placeholder button {
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #a3e635;
+  color: #090812;
+}
+
+.watch-placeholder strong {
+  font-size: 15px;
+}
+
+.watch-placeholder small {
+  color: #aaa3b7;
+  font-size: 11px;
+}
+
+.watch-title {
+  margin: 20px 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.watch-subtitle {
+  color: #9992a9;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+.watch-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.watch-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 15px;
+  border: 1px solid #ffffff18;
+  border-radius: 9px;
+  background: #191528;
+  color: #eee9f7;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.watch-controls button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.watch-controls .watch-next {
+  background: linear-gradient(100deg, #6f9f20, #a3e635);
+  color: #090812;
+  border: 0;
+}
+
+.watch-sidebar {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #ffffff12;
+  border-radius: 14px;
+  background: #141221;
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.watch-sidebar h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+
+.watch-season {
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 13px;
+  background: #211c32;
+  color: #fff;
+  border: 1px solid #ffffff16;
+  border-radius: 8px;
+  outline: none;
+}
+
+.episode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.episode-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: #1b1729;
+  color: #e9e4f1;
+}
+
+.episode-item.active {
+  border-color: #a3e63588;
+  background: #a3e63516;
+}
+
+.episode-number {
+  min-width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #302943;
+  color: #d5ff91;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.episode-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.episode-details strong {
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.episode-details small {
+  font-size: 9px;
+  color: #91899f;
+}
+
+.watch-error {
+  padding: 13px;
+  margin-top: 12px;
+  border: 1px solid #ff777733;
+  border-radius: 9px;
+  background: #ff55550c;
+  color: #ffbcbc;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.admin-page {
+  padding: 30px 5.5% 110px;
+}
+
+.admin-panel {
+  padding: 22px;
+  border: 1px solid #ffffff15;
+  border-radius: 15px;
+  background: #141221;
+}
+
+.admin-panel h2 {
+  margin-top: 0;
+  font-size: 21px;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 14px 0;
+}
+
+.admin-field label {
+  color: #c9c1d8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ffffff18;
+  border-radius: 9px;
+  outline: none;
+  background: #0d0b17;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.admin-save {
+  width: 100%;
+  padding: 13px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(100deg, #6f9f20, #a3e635);
+  color: #090812;
+  font-weight: 800;
+}
+
+@media(max-width:850px) {
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .watch-sidebar {
+    max-height: 430px;
+  }
+}
+
+@media(max-width:700px) {
+  .watch-page,
+  .admin-page {
+    padding: 20px 4% 100px;
+  }
+
+  .watch-player {
+    border-radius: 9px;
+  }
+
+  .watch-title {
+    font-size: 18px;
+  }
+
+  .watch-sidebar {
+    padding: 13px;
+  }
+
+  .admin-panel {
+    padding: 15px;
+  }
+}
+
