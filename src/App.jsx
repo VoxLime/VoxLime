@@ -1,3 +1,6 @@
+
+import React from "react";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   Search, Menu, X, Play, Star, Flame, Sparkles, CalendarDays,
