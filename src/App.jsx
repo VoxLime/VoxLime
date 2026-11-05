@@ -41,6 +41,7 @@ const MEDIA_FIELDS = `
   title { romaji english }
   coverImage { extraLarge large }
   bannerImage
+    trailer { id site thumbnail }
   averageScore
   episodes
   seasonYear
@@ -255,7 +256,44 @@ export default function App() {
       {selected && <div className="modal-backdrop" onClick={() => setSelected(null)}>
         <div className="anime-modal" onClick={e => e.stopPropagation()}>
           <button className="modal-close" onClick={() => setSelected(null)} aria-label="Close"><X/></button>
-          <div className="modal-banner">{selected.bannerImage ? <img src={selected.bannerImage} alt=""/> : <img src={selected.coverImage?.extraLarge} alt=""/>}</div>
+          
+<div className="modal-banner">
+  {selected.bannerImage ? (
+    <img src={selected.bannerImage} alt="" />
+  ) : (
+    <img src={selected.coverImage?.extraLarge} alt="" />
+  )}
+</div>
+
+{selected.trailer?.site?.toLowerCase() === "youtube" &&
+ selected.trailer?.id ? (
+  <div style={{
+    width: "100%",
+    aspectRatio: "16 / 9",
+    background: "#000"
+  }}>
+    <iframe
+      width="100%"
+      height="100%"
+      src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selected.trailer.id)}`}
+      title={`${titleOf(selected)} trailer`}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowFullScreen
+      referrerPolicy="strict-origin-when-cross-origin"
+      style={{border: 0}}
+    />
+  </div>
+) : (
+  <div style={{
+    padding: "18px",
+    textAlign: "center",
+    color: "#aaa3b7",
+    fontSize: "12px"
+  }}>
+    Trailer is not available for this anime.
+  </div>
+)}
+
           <div className="modal-body">
             <img className="modal-poster" src={selected.coverImage?.large} alt={titleOf(selected)}/>
             <div className="modal-info"><span className="modal-kicker">{selected.format || "ANIME"} · {selected.seasonYear || "TBA"}</span><h2>{titleOf(selected)}</h2>
