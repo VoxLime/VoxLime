@@ -3,3 +3,27 @@
 @media(max-width:1050px){.anime-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.desktop-nav{gap:18px}.search-box{width:190px}.hero{min-height:440px}}
 @media(max-width:700px){.topbar{height:67px;padding:0 4%;gap:8px}.brand{font-size:15px;gap:8px}.brand-mark{width:35px;height:35px}.brand small{font-size:6px}.desktop-nav{display:none;position:absolute;top:66px;left:0;right:0;margin:0;padding:17px 5%;background:#100d1e;border-bottom:1px solid var(--line);flex-direction:column;gap:18px}.desktop-nav.open{display:flex}.header-actions{gap:7px}.search-box{width:40px;height:38px;padding:0;justify-content:center;border:0;background:transparent}.search-box input{position:absolute;top:73px;left:4%;width:92%;height:42px;padding:0 13px;background:#191528;border:1px solid #ffffff20;border-radius:9px;display:none}.search-box:focus-within input{display:block}.search-box button{display:none}.language-button{padding:9px;font-size:10px}.language-button svg{width:14px}.menu-button{display:flex;padding:8px}.hero{min-height:550px;padding:62px 6% 40px;align-items:flex-start}.hero-content{width:100%;max-width:100%}.hero h1{font-size:43px;letter-spacing:-2px;margin-top:20px}.hero-content>p{font-size:12px;max-width:310px}.hero-art{width:100%;height:56%;top:auto;bottom:0;opacity:.65}.hero-art-shade{background:linear-gradient(0deg,#100d20 0%,transparent 70%),linear-gradient(90deg,#100d20 0%,transparent 100%)}.featured-label{right:7%;bottom:22px}.featured-label strong{font-size:16px}.hero-stats{margin-top:25px}.page-content{padding:0 4%}.content-section{padding-top:29px}.section-title h2{font-size:16px}.section-icon{width:31px;height:31px}.anime-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px 10px}.poster-wrap{border-radius:9px}.format-tag,.score{font-size:7px;padding:4px 5px;top:6px}.format-tag{left:5px}.score{right:5px}.card-copy h3{font-size:10px;margin-top:7px}.card-copy p{font-size:8px}.genre-list{gap:7px}.genre-chip{padding:9px 10px;font-size:10px;gap:5px}.footer{padding:25px 5% 100px;gap:12px}.footer p{width:100%}.mobile-bottom-nav{position:fixed;display:flex;bottom:0;left:0;right:0;z-index:30;height:65px;padding:7px 4% calc(7px + env(safe-area-inset-bottom));justify-content:space-around;background:#100e1df2;border-top:1px solid #ffffff13;backdrop-filter:blur(18px)}.mobile-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:#817a93;font-size:9px;min-width:55px}.mobile-bottom-nav button.active{color:#d5ff91}.search-results{padding:30px 4% 90px}.modal-body{padding:0 16px 20px;gap:13px}.modal-poster{width:100px;height:145px}.modal-info{padding-top:58px}.modal-info h2{font-size:18px}.modal-info p{font-size:11px}.modal-banner{height:150px}.result-count{font-size:9px}}
 @media(max-width:380px){.brand{font-size:13px}.brand-mark{width:31px;height:31px}.language-button{font-size:9px;padding:8px}.anime-grid{gap:12px 8px}.hero h1{font-size:37px}}
+
+/* VoxLime Mobile Play Button Fix */
+.poster-hover {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  left: auto;
+  top: auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #a3e635;
+  color: #090812;
+  opacity: 1;
+  transition: 0.2s;
+  pointer-events: none;
+  box-shadow: 0 4px 15px #a3e63566;
+}
+
+.anime-card:hover .poster-hover {
+  opacity: 1;
+}
