@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoxLime Admin Setup</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #090812;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .panel {
+      width: min(340px, 85%);
+      padding: 25px;
+      border-radius: 16px;
+      background: #141221;
+    }
+    h2 { color: #a3e635; }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 13px;
+      margin: 9px 0;
+      border: 1px solid #393449;
+      border-radius: 8px;
+    }
+    input { background: #090812; color: white; }
+    button {
+      background: #a3e635;
+      color: #090812;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #result { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h2>VoxLime Admin Setup</h2>
+    <p>Create your first administrator account.</p>
+
+    <form id="setupForm">
+      <input value="voxadmin" readonly>
+      <input
+        id="password"
+        type="password"
+        placeholder="Your Admin Password"
+        minlength="16"
+        required
+        autocomplete="new-password"
+      >
+      <button type="submit">Create Admin Account</button>
+    </form>
+
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("setupForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const password = document.getElementById("password").value;
+      result.textContent = "Creating account...";
+
+      try {
+        const response = await fetch("/api/admin/setup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "voxadmin",
+            password
+          })
+        });
+
+        const data = await response.json();
+
+        result.textContent = data.message;
+
+        if (data.success) {
+          form.reset();
+          form.querySelector("button").disabled = true;
+        }
+      } catch {
+        result.textContent = "Connection error. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
