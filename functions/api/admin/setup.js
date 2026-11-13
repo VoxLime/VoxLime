@@ -79,9 +79,11 @@ export async function onRequestPost({ request, env }) {
     });
 
   } catch (error) {
+    console.error("ADMIN SETUP ERROR:", error);
+
     return Response.json({
       success: false,
-      message: "Admin setup failed"
+      message: "Setup failed. Check Cloudflare Function Logs."
     }, { status: 500 });
   }
 }
