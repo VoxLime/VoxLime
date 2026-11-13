@@ -1,1 +1,166 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>VoxLime Admin Dashboard</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #090b12;
+      color: #f5f7fa;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 20px 5%;
+      background: #131722;
+      border-bottom: 1px solid #252d3c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    h1 { color: #a3e635; font-size: 23px; margin: 0; }
+
+    button {
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 8px;
+      background: #a3e635;
+      color: #111827;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      width: 90%;
+      max-width: 1000px;
+      margin: 45px auto;
+    }
+
+    .welcome, .section {
+      background: #131722;
+      border: 1px solid #252d3c;
+      border-radius: 14px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 { margin-top: 0; }
+
+    .muted { color: #929bad; line-height: 1.6; }
+
+    .status {
+      color: #a3e635;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>VoxLime Admin</h1>
+    <button id="logoutButton">Logout</button>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <h2>Welcome, <span id="adminName">Admin</span></h2>
+      <p class="muted">
+        Welcome to your VoxLime control panel.
+        Your admin session is active.
+      </p>
+      <p class="status" id="sessionStatus">Checking session...</p>
+    </section>
+
+    <section class="section">
+      <h2>Anime Management</h2>
+      <p class="muted">
+        Anime management tools will be added here.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Seasons & Episodes</h2>
+      <p class="muted">
+        Season and episode management tools will be added here.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Video Sources</h2>
+      <p class="muted">
+        HLS, MP4 and authorized provider sources will be managed here.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    async function verifyAdmin() {
+      try {
+        const response = await fetch("/api/admin/me", {
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.authenticated) {
+          window.location.replace("/admin.html");
+          return;
+        }
+
+        document.getElementById("adminName").textContent =
+          data.admin.username;
+
+        document.getElementById("sessionStatus").textContent =
+          "● Secure session active";
+
+      } catch (error) {
+        document.getElementById("sessionStatus").textContent =
+          "Unable to verify session. Please login again.";
+
+        console.error("Session verification error:", error);
+      }
+    }
+
+    document.getElementById("logoutButton")
+      .addEventListener("click", async () => {
+        const button = document.getElementById("logoutButton");
+
+        button.disabled = true;
+        button.textContent = "Logging out...";
+
+        try {
+          const response = await fetch("/api/admin/logout", {
+            method: "POST",
+            credentials: "same-origin"
+          });
+
+          if (response.ok) {
+            window.location.replace("/admin.html");
+          } else {
+            button.disabled = false;
+            button.textContent = "Logout";
+            alert("Logout failed. Please try again.");
+          }
+        } catch (error) {
+          button.disabled = false;
+          button.textContent = "Logout";
+          alert("Unable to connect. Please try again.");
+        }
+      });
+
+    verifyAdmin();
+  </script>
+</body>
+</html>
