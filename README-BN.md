@@ -47,3 +47,5 @@ npm run build
 - AniList-এর তথ্য/ছবি তাদের নিজস্ব সেবা ও নীতিমালার অধীন।
 - API key বা secret এই frontend-এ রাখা হয়নি।
 - `Watchlist` এবং `Profile` এখন placeholder; পরবর্তী ধাপে backend/database যুক্ত করে বাস্তব করা হবে।
+
+- VoxLime deployment update.
