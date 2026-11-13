@@ -19,7 +19,7 @@ async function hashPassword(password, salt) {
       name: "PBKDF2",
       hash: "SHA-256",
       salt,
-      iterations: 310000
+     iterations: 100000
     },
     key,
     256
@@ -65,8 +65,8 @@ export async function onRequestPost({ request, env }) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const passwordHash = await hashPassword(body.password, salt);
 
-    const storedHash =
-      "pbkdf2$310000$" + toHex(salt) + "$" + passwordHash;
+   const storedHash =
+      "pbkdf2$100000$" + toHex(salt) + "$" + passwordHash;
 
     await env.DB.prepare(`
       INSERT INTO admin_users (username, password_hash)
