@@ -131,3 +131,47 @@ export async function onRequestPost({ request, env }) {
     );
   }
 }
+
+export async function onRequestGet({ request, env }) {
+  try {
+    const admin = await getAdminSession(request, env);
+
+    if (!admin) {
+      return Response.json(
+        { success: false, message: "Unauthorized. Please login." },
+        { status: 401 }
+      );
+    }
+
+    const result = await env.DB.prepare(`
+      SELECT
+        id,
+        title,
+        description,
+        poster_url,
+        banner_url,
+        release_year,
+        genre,
+        status,
+        created_at,
+        updated_at
+      FROM anime
+      ORDER BY created_at DESC
+    `).all();
+
+    return Response.json({
+      success: true,
+      count: result.results.length,
+      anime: result.results
+    });
+
+  } catch (error) {
+    console.error("ADMIN ANIME LIST ERROR:", error);
+
+    return Response.json(
+      { success: false, message: "Unable to load anime list." },
+      { status: 500 }
+    );
+  }
+}
+
