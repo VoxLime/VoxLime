@@ -246,5 +246,318 @@
 
     verifyAdmin();
   </script>
+  
+<script>
+  const animeForm = document.getElementById("animeForm");
+  const animeMessage = document.getElementById("animeMessage");
+  const animeList = document.getElementById("animeList");
+
+  const manualPanel = document.getElementById("manualAnimePanel");
+  const aniListPanel = document.getElementById("aniListPanel");
+
+  function showAnimeMessage(message, error = false) {
+    animeMessage.textContent = message;
+    animeMessage.style.color = error ? "#fb7185" : "#a3e635";
+  }
+
+  // Switch between Manual Add and AniList
+  document.getElementById("manualModeButton").addEventListener("click", () => {
+    manualPanel.hidden = false;
+    aniListPanel.hidden = true;
+  });
+
+  document.getElementById("aniListModeButton").addEventListener("click", () => {
+    manualPanel.hidden = true;
+    aniListPanel.hidden = false;
+  });
+
+  // Load all anime from database
+  async function loadAnime() {
+    animeList.textContent = "Loading anime...";
+
+    try {
+      const response = await fetch("/api/admin/anime", {
+        credentials: "same-origin",
+        cache: "no-store"
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        window.location.replace("/admin.html");
+        return;
+      }
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to load anime.");
+      }
+
+      renderAnime(data.anime || []);
+
+    } catch (error) {
+      animeList.textContent = error.message;
+    }
+  }
+
+  // Display anime list safely
+  let savedAnime = [];
+
+  function renderAnime(items) {
+    savedAnime = items;
+    animeList.replaceChildren();
+
+    if (!items.length) {
+      animeList.textContent = "No anime found.";
+      return;
+    }
+
+    items.forEach(anime => {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "padding:14px;margin:12px 0;background:#0b0f18;" +
+        "border:1px solid #30394a;border-radius:10px;";
+
+      const title = document.createElement("h3");
+      title.textContent = anime.title;
+
+      const details = document.createElement("p");
+      details.style.color = "#929bad";
+      details.textContent =
+        "Year: " + (anime.release_year || "N/A") +
+        " | Status: " + anime.status +
+        " | ID: " + anime.id;
+
+      card.append(title, details);
+
+      if (anime.poster_url) {
+        const image = document.createElement("img");
+        image.src = anime.poster_url;
+        image.alt = anime.title + " poster";
+        image.loading = "lazy";
+        image.style.cssText =
+          "width:90px;max-height:130px;object-fit:cover;border-radius:7px;";
+        card.appendChild(image);
+      }
+
+      animeList.appendChild(card);
+    });
+  }
+
+  // Search saved anime
+  document.getElementById("animeListSearch")
+    .addEventListener("input", event => {
+      const query = event.target.value.toLowerCase().trim();
+
+      const filtered = savedAnime.filter(anime =>
+        anime.title.toLowerCase().includes(query)
+      );
+
+      renderAnime(filtered);
+    });
+
+  document.getElementById("refreshAnimeButton")
+    .addEventListener("click", loadAnime);
+
+  // Save manually entered anime
+  animeForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = document.getElementById("saveAnimeButton");
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    showAnimeMessage("");
+
+    const payload = {
+      title: document.getElementById("animeTitle").value.trim(),
+      description: document.getElementById("animeDescription").value.trim(),
+      poster_url: document.getElementById("animePoster").value.trim(),
+      banner_url: document.getElementById("animeBanner").value.trim(),
+      release_year: document.getElementById("animeYear").value,
+      genre: document.getElementById("animeGenre").value.trim(),
+      status: document.getElementById("animeStatus").value
+    };
+
+    try {
+      const response = await fetch("/api/admin/anime", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        window.location.replace("/admin.html");
+        return;
+      }
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to save anime.");
+      }
+
+      showAnimeMessage("Anime saved successfully!");
+      animeForm.reset();
+
+      await loadAnime();
+
+    } catch (error) {
+      showAnimeMessage(error.message, true);
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "Save Anime";
+    }
+  });
+
+  // Search anime from AniList
+  async function searchAniList() {
+    const query = document.getElementById("aniListSearch").value.trim();
+    const results = document.getElementById("aniListResults");
+    const button = document.getElementById("aniListSearchButton");
+
+    if (!query) {
+      results.textContent = "Enter an anime name first.";
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Searching...";
+    results.textContent = "";
+
+    const graphqlQuery = `
+      query ($search: String) {
+        Page(page: 1, perPage: 15) {
+          media(search: $search, type: ANIME, sort: SEARCH_MATCH) {
+            id
+            title {
+              romaji
+              english
+              native
+            }
+            description(asHtml: false)
+            coverImage {
+              extraLarge
+              large
+            }
+            bannerImage
+            seasonYear
+            startDate {
+              year
+            }
+            genres
+          }
+        }
+      }
+    `;
+
+    try {
+      const response = await fetch("https://graphql.anilist.co", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          query: graphqlQuery,
+          variables: { search: query }
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.errors) {
+        throw new Error("AniList search failed. Please try again.");
+      }
+
+      const items = data.data.Page.media;
+      results.replaceChildren();
+
+      if (!items.length) {
+        results.textContent = "No anime found.";
+        return;
+      }
+
+      items.forEach(anime => {
+        const card = document.createElement("div");
+        card.style.cssText =
+          "padding:12px;margin:12px 0;background:#0b0f18;" +
+          "border:1px solid #30394a;border-radius:10px;";
+
+        const title = document.createElement("h4");
+        title.textContent =
+          anime.title.english || anime.title.romaji || anime.title.native;
+
+        const year = document.createElement("p");
+        year.style.color = "#929bad";
+        year.textContent =
+          "Year: " + (anime.seasonYear || anime.startDate.year || "N/A");
+
+        const selectButton = document.createElement("button");
+        selectButton.type = "button";
+        selectButton.textContent = "Select & Auto-fill";
+
+        selectButton.addEventListener("click", () => {
+          document.getElementById("animeTitle").value =
+            anime.title.english || anime.title.romaji || "";
+
+          document.getElementById("animeDescription").value =
+            (anime.description || "").replace(/<[^>]*>/g, "");
+
+          document.getElementById("animePoster").value =
+            anime.coverImage.extraLarge || anime.coverImage.large || "";
+
+          document.getElementById("animeBanner").value =
+            anime.bannerImage || "";
+
+          document.getElementById("animeYear").value =
+            anime.seasonYear || anime.startDate.year || "";
+
+          document.getElementById("animeGenre").value =
+            (anime.genres || []).join(", ");
+
+          document.getElementById("animeStatus").value = "draft";
+
+          manualPanel.hidden = false;
+          aniListPanel.hidden = true;
+
+          showAnimeMessage(
+            "AniList information imported. Review it and click Save Anime."
+          );
+        });
+
+        card.append(title, year, selectButton);
+        results.appendChild(card);
+      });
+
+    } catch (error) {
+      results.textContent = error.message;
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "Search";
+    }
+  }
+
+  document.getElementById("aniListSearchButton")
+    .addEventListener("click", searchAniList);
+
+  document.getElementById("aniListSearch")
+    .addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchAniList();
+      }
+    });
+
+  // Initial anime list
+  loadAnime();
+</script>
 </body>
 </html>
+
+
