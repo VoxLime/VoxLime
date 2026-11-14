@@ -609,6 +609,209 @@
 
   // Initial anime list
   loadAnime();
+
+  // ================================
+  // SOURCE DIRECTORY
+  // ================================
+
+  let directorySources = [];
+
+  async function loadSourceDirectory() {
+    const message = document.getElementById("sourceMessage");
+    const list = document.getElementById("sourceList");
+    const refreshButton = document.getElementById("refreshSourcesButton");
+
+    message.textContent = "Loading sources...";
+    list.replaceChildren();
+
+    if (refreshButton) refreshButton.disabled = true;
+
+    try {
+      const response = await fetch("/api/admin/sources", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store"
+      });
+
+      if (response.status === 401) {
+        window.location.href = "/admin-login.html";
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to load sources.");
+      }
+
+      directorySources = data.sources || [];
+
+      renderSourceDirectory();
+
+      message.textContent =
+        directorySources.length + " sources loaded successfully.";
+
+    } catch (error) {
+      message.textContent = error.message;
+    } finally {
+      if (refreshButton) refreshButton.disabled = false;
+    }
+  }
+
+  function renderSourceDirectory() {
+    const list = document.getElementById("sourceList");
+    const search = document.getElementById("sourceSearch");
+    const category = document.getElementById("sourceCategory");
+
+    const searchText = search.value.trim().toLowerCase();
+    const selectedCategory = category.value;
+
+    list.replaceChildren();
+
+    const automaticCount = directorySources.filter(
+      source => source.automation_status === "automatic"
+    ).length;
+
+    const manualCount = directorySources.filter(
+      source => source.automation_status === "manual"
+    ).length;
+
+    document.getElementById("sourceTotal").textContent =
+      directorySources.length;
+
+    document.getElementById("sourceAutomatic").textContent =
+      automaticCount;
+
+    document.getElementById("sourceManual").textContent =
+      manualCount;
+
+    const filteredSources = directorySources.filter(source => {
+      const matchesCategory =
+        selectedCategory === "all" ||
+        source.source_category === selectedCategory;
+
+      const searchableText = [
+        source.name,
+        source.description,
+        source.integration_method,
+        source.automation_status
+      ].join(" ").toLowerCase();
+
+      return matchesCategory &&
+        searchableText.includes(searchText);
+    });
+
+    if (!filteredSources.length) {
+      list.textContent = "No matching sources found.";
+      return;
+    }
+
+    filteredSources.forEach(source => {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "padding:16px;margin:12px 0;" +
+        "background:#0b0f18;" +
+        "border:1px solid #30394a;" +
+        "border-radius:10px;";
+
+      const title = document.createElement("h3");
+      title.textContent = source.name;
+
+      const info = document.createElement("p");
+      info.style.color = "#929bad";
+      info.textContent =
+        "Category: " + source.source_category +
+        " | Method: " + source.integration_method +
+        " | Status: " + source.automation_status;
+
+      const enabled = document.createElement("p");
+      enabled.textContent =
+        Number(source.is_enabled) === 1
+          ? "Enabled"
+          : "Disabled";
+
+      const description = document.createElement("p");
+      description.textContent = source.description || "";
+
+      const capabilities = document.createElement("p");
+      capabilities.style.color = "#a5b4fc";
+
+      const supported = [];
+
+      if (Number(source.supports_api)) supported.push("API");
+      if (Number(source.supports_rss)) supported.push("RSS");
+      if (Number(source.supports_webhook)) supported.push("Webhook");
+      if (Number(source.supports_embed)) supported.push("Embed");
+
+      capabilities.textContent =
+        "Capabilities: " + (supported.join(", ") || "Not specified");
+
+      card.append(title, info, enabled, description, capabilities);
+
+      const details = document.createElement("details");
+      details.style.marginTop = "12px";
+
+      const summary = document.createElement("summary");
+      summary.textContent = "Setup Guide & Permission Notes";
+
+      const guide = document.createElement("p");
+      guide.textContent =
+        "Setup: " + (source.setup_guide || "Not available.");
+
+      const permission = document.createElement("p");
+      permission.textContent =
+        "Permission: " +
+        (source.permission_notes || "Not specified.");
+
+      details.append(summary, guide, permission);
+      card.appendChild(details);
+
+      const links = document.createElement("div");
+      links.style.cssText =
+        "display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;";
+
+      function addSafeLink(url, label) {
+        if (!url) return;
+
+        try {
+          const parsed = new URL(url);
+
+          if (!["https:", "http:"].includes(parsed.protocol)) return;
+
+          const link = document.createElement("a");
+          link.href = parsed.href;
+          link.textContent = label;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+
+          links.appendChild(link);
+        } catch {
+          // Ignore invalid URLs
+        }
+      }
+
+      addSafeLink(source.website_url, "Visit Website");
+      addSafeLink(source.documentation_url, "Documentation");
+
+      card.appendChild(links);
+      list.appendChild(card);
+    });
+  }
+
+  document.getElementById("refreshSourcesButton")
+    .addEventListener("click", loadSourceDirectory);
+
+  document.getElementById("sourceSearch")
+    .addEventListener("input", renderSourceDirectory);
+
+  document.getElementById("sourceCategory")
+    .addEventListener("change", renderSourceDirectory);
+
+  // Load sources after admin authentication
+  loadSourceDirectory();
+
+  
 </script>
 </body>
 </html>
