@@ -186,6 +186,59 @@
         HLS, MP4 and authorized provider sources will be managed here.
       </p>
     </section>
+
+<section class="section" id="sourceDirectory">
+  <h2>Source Directory</h2>
+
+  <p class="muted">
+    Manage metadata providers, authorized video sources and RSS feeds.
+  </p>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;">
+    <div class="source-stat">
+      <strong id="sourceTotal">0</strong>
+      <span>Total Sources</span>
+    </div>
+
+    <div class="source-stat">
+      <strong id="sourceAutomatic">0</strong>
+      <span>Automatic</span>
+    </div>
+
+    <div class="source-stat">
+      <strong id="sourceManual">0</strong>
+      <span>Manual</span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;">
+    <input
+      id="sourceSearch"
+      type="search"
+      placeholder="Search sources..."
+      style="flex:1;min-width:180px;"
+    >
+
+    <select id="sourceCategory">
+      <option value="all">All Categories</option>
+      <option value="metadata">Metadata</option>
+      <option value="video">Video</option>
+      <option value="feed">Feed</option>
+    </select>
+
+    <button type="button" id="refreshSourcesButton">
+      Refresh
+    </button>
+  </div>
+
+  <p id="sourceMessage" class="muted" role="status">
+    Loading sources...
+  </p>
+
+  <div id="sourceList"></div>
+</section>
+
+    
   </main>
 
   <script>
