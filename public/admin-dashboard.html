@@ -82,12 +82,96 @@
       <p class="status" id="sessionStatus">Checking session...</p>
     </section>
 
-    <section class="section">
-      <h2>Anime Management</h2>
-      <p class="muted">
-        Anime management tools will be added here.
-      </p>
-    </section>
+  
+<section class="section" id="animeManagement">
+  <h2>Anime Management</h2>
+  <p class="muted">Add, search and manage your anime library.</p>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0;">
+    <button type="button" id="manualModeButton">+ Manual Add</button>
+    <button type="button" id="aniListModeButton"
+      style="background:#8b5cf6;color:white;">
+      Search AniList
+    </button>
+  </div>
+
+  <div id="manualAnimePanel">
+    <h3>Add New Anime</h3>
+
+    <form id="animeForm">
+      <label>Anime Title *</label>
+      <input id="animeTitle" required maxlength="200"
+        placeholder="Enter anime title">
+
+      <label>Description</label>
+      <textarea id="animeDescription"
+        maxlength="10000" rows="4"
+        placeholder="Anime description"></textarea>
+
+      <label>Poster Image URL</label>
+      <input id="animePoster" type="url"
+        placeholder="https://example.com/poster.jpg">
+
+      <label>Banner Image URL</label>
+      <input id="animeBanner" type="url"
+        placeholder="https://example.com/banner.jpg">
+
+      <label>Release Year</label>
+      <input id="animeYear" type="number"
+        min="1900" max="2100" placeholder="2026">
+
+      <label>Genres (comma separated)</label>
+      <input id="animeGenre"
+        placeholder="Action, Adventure, Fantasy">
+
+      <label>Status</label>
+      <select id="animeStatus">
+        <option value="draft">Draft</option>
+        <option value="published">Published</option>
+      </select>
+
+      <button type="submit" id="saveAnimeButton">
+        Save Anime
+      </button>
+    </form>
+  </div>
+
+  <div id="aniListPanel" hidden>
+    <h3>Import from AniList</h3>
+
+    <input id="aniListSearch"
+      placeholder="Search anime name">
+
+    <button type="button" id="aniListSearchButton">
+      Search
+    </button>
+
+    <div id="aniListResults"></div>
+    <p class="muted">
+      Select an anime to automatically fill the form.
+      Review the information before saving.
+    </p>
+  </div>
+
+  <hr style="border-color:#30394a;margin:25px 0;">
+
+  <h3>Anime Library</h3>
+
+  <div style="display:flex;gap:10px;margin:15px 0;">
+    <input id="animeListSearch"
+      placeholder="Search saved anime...">
+    <button type="button" id="refreshAnimeButton">
+      Refresh
+    </button>
+  </div>
+
+  <div id="animeList">
+    <p class="muted">Loading anime...</p>
+  </div>
+
+  <p id="animeMessage" role="status"></p>
+</section>
+
 
     <section class="section">
       <h2>Seasons & Episodes</h2>
